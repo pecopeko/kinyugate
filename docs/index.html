@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KINYUGATE 金融門 | 資金決済法50%供託・犯収法7年KYC・トラベルルール ローカル監査</title>
+  <meta name="description" content="ブラウザ完結・通信ゼロで資金決済法（前払式1,000万円超 2分の1発行保証金供託・第2種資金移動業100万円上限）・犯収法（eKYC・JAFIC届出・7年保存）・暗号資産トラベルルールを監査します。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="masthead" data-ui="masthead">
+      <div class="brand-lockup">
+        <span class="hanko-seal" aria-hidden="true">金融</span>
+        <div>
+          <h1>KINYUGATE <span class="title-sub">金融門</span></h1>
+          <p class="subtitle">資金決済法（50%供託・第2種100万円）・犯収法7年KYC・トラベルルール ローカル監査ツール</p>
+        </div>
+      </div>
+      <div class="trust-badges">
+        <span class="trust-pill" data-ui="badge">100% ブラウザローカル計算</span>
+        <span class="trust-pill" data-ui="badge">残高・顧客AML統制データ社外送信ゼロ</span>
+      </div>
+    </header>
+
+    <main class="workspace-grid">
+      <section class="panel input-panel" data-ui="panel">
+        <div class="panel-head">
+          <h2>1. 未使用残高・供託保全・送金上限・トラベルルール条件</h2>
+          <div class="preset-actions">
+            <button type="button" id="btn-sample-bad" class="btn-secondary" data-ui="btn">供託不足・トラベルルール未通知例</button>
+            <button type="button" id="btn-sample-good" class="btn-secondary" data-ui="btn">資金決済法・AML 準拠例</button>
+          </div>
+        </div>
+
+        <div class="meta-grid">
+          <label>
+            事業者名
+            <input id="in-org" type="text" value="東京デジタル決済株式会社" />
+          </label>
+          <label>
+            対象決済 / ウォレットサービス名
+            <input id="in-service" type="text" value="TokyoPay ウォレット・ポイント基盤" />
+          </label>
+        </div>
+
+        <div class="meta-grid-3">
+          <label>
+            業態区分
+            <select id="in-btype">
+              <option value="prepaid_payment">前払式支払手段 (1,000万超→50%供託)</option>
+              <option value="fund_transfer">資金移動業 (第2種 100万円上限)</option>
+              <option value="crypto_exchange">暗号資産交換業 / 電子決済手段</option>
+            </select>
+          </label>
+          <label>
+            基準日 未使用残高 (JPY)
+            <input id="in-unused" type="number" min="0" step="1000000" value="30000000" />
+          </label>
+          <label>
+            供託済 / 保全済金額 (JPY)
+            <input id="in-deposited" type="number" min="0" step="1000000" value="8000000" />
+          </label>
+        </div>
+
+        <div class="meta-grid-3">
+          <label>
+            単発最大送金 / 移転額 (JPY)
+            <input id="in-tx" type="number" min="0" step="100000" value="1500000" />
+          </label>
+          <label>
+            疑わしい取引(STR)経過日数
+            <input id="in-str" type="number" min="0" step="1" value="14" />
+          </label>
+          <label>
+            確認記録・取引記録 保存年数
+            <input id="in-kycyrs" type="number" min="0" step="1" value="3" />
+          </label>
+        </div>
+
+        <div class="meta-grid">
+          <label class="inline-check">
+            <input id="in-type1" type="checkbox" />
+            <span>第1種資金移動業（100万円超可）認可あり</span>
+          </label>
+          <label class="inline-check">
+            <input id="in-cross" type="checkbox" checked />
+            <span>暗号資産移転（トラベルルール必須取引）含む</span>
+          </label>
+          <label class="inline-check">
+            <input id="in-travel" type="checkbox" />
+            <span>トラベルルール送付元・受取人通知を実施済み</span>
+          </label>
+        </div>
+
+        <label class="field-block">
+          AML/CFT規程・発行保証金保全ルール・社内管理テキスト
+          <textarea id="in-policy" rows="9" placeholder="取引時確認・eKYC、発行保証金2分の1供託/信託保全、トラベルルール通知、JAFIC疑わしい取引届出、OFAC/財務省制裁凍結、第2種100万円上限、コールドウォレット95%以上、7年保存を入力..."></textarea>
+        </label>
+
+        <div class="run-bar">
+          <button type="button" id="btn-audit" class="btn-primary" data-ui="btn">資金決済法・AML・供託監査を実行</button>
+        </div>
+      </section>
+
+      <section class="panel output-panel" data-ui="panel">
+        <div class="panel-head">
+          <h2>2. 供託必要額・トラベルルール・金融庁検査リスク</h2>
+          <div id="status-badge" class="score-pill" data-ui="score-pill">未診断</div>
+        </div>
+
+        <div class="summary-strip" data-ui="summary-strip">
+          <div class="metric-cell" data-ui="metric">
+            <span class="metric-label">AML・資金決済スコア</span>
+            <strong id="m-score" class="metric-val">—</strong>
+          </div>
+          <div class="metric-cell" data-ui="metric">
+            <span class="metric-label">50% 供託不足額判定</span>
+            <strong id="m-deposit" class="metric-val">—</strong>
+          </div>
+          <div class="metric-cell" data-ui="metric">
+            <span class="metric-label">トラベル・STR・保存</span>
+            <strong id="m-aml" class="metric-val">—</strong>
+          </div>
+        </div>
+
+        <h3>検出された資金決済法・犯収法上の是正課題</h3>
+        <div id="findings-list" class="findings-list"></div>
+
+        <div class="draft-head">
+          <h3>自動生成『資金決済法・AML・トラベルルール 自己点検証明書』Markdown</h3>
+          <div class="draft-actions">
+            <button type="button" id="btn-copy-md" class="btn-secondary" data-ui="btn">Markdownをコピー</button>
+            <button type="button" id="btn-download-md" class="btn-secondary" data-ui="btn">.md 保存</button>
+          </div>
+        </div>
+        <pre id="md-output" class="code-box"><code></code></pre>
+      </section>
+    </main>
+
+    <footer class="site-footer" data-ui="footer">
+      <p>KINYUGATE 金融門 — Horizon-Money Studio Track 2（完全クライアントサイド実行・通信ゼロ・資金決済法/AML自己点検ツール）</p>
+    </footer>
+  </div>
+
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>
